@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1.0.3
+// @version     1.0.4
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -49,6 +49,8 @@ function UserSpy(version) {
 }
 
 UserSpy.prototype.executeOnce = function () {
+    "use strict";
+    var th = this;
     events.on(th, 'RenameUser', function (ignore1, ignore2, user) {
         if (gmc.get('rename-log')) {
             addSystemMessage('{0} renamed to {1}'.format(user.ip, user.username));
@@ -109,4 +111,4 @@ UserSpy.prototype.userLoggedOff = function (id, user) {
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1.0.3');
+window.plugins.userSpy = new UserSpy('1.0.4');
