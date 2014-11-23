@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1
+// @version     1.0.1
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -45,6 +45,7 @@ function UserSpy(version) {
 UserSpy.prototype.postConnect = function () {
     "use strict";
     var th = this;
+    //add events after we connected so it doesn't spam the chat for every user/video
     events.on(th, 'AddUser', th.userLoggedOn);
     events.on(th, 'RemoveUser', th.userLoggedOff);
     events.on(th, 'RenameUser', function (ignore1, ignore2, user) {
@@ -55,7 +56,7 @@ UserSpy.prototype.postConnect = function () {
     events.on(th, 'AddVideo', th.videoAdded);
 };
 UserSpy.prototype.videoAdded = function (video) {
-    if (!gmc.get('rename-log')) {
+    if (!gmc.get('add-video-log')) {
         return;
     }
     var url = urlParser.create(video.info),
@@ -70,6 +71,7 @@ UserSpy.prototype.videoAdded = function (video) {
 UserSpy.prototype.resetVariables = function () {
     "use strict";
     var th = this;
+    //remove events when disconnecting/changing room and readd at postConnect
     events.unbind('AddUser', th.userLoggedOn);
     events.unbind('RemoveUser', th.userLoggedOff);
     events.unbind('AddVideo', th.videoAdded);
@@ -90,4 +92,4 @@ UserSpy.prototype.userLoggedOff = function (id, user) {
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1');
+window.plugins.userSpy = new UserSpy('1.0.1');
