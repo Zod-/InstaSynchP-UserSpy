@@ -3,6 +3,16 @@ InstaSynchP-UserSpy
 
 Log user actions into the chat (login/off,rename, video add)
 
+Settings
+--------
+*   Login/off messages
+
+*   Login/off greynames messages
+
+*   Renames messages
+
+*   Add video messages
+
 License
 -----------
 The MIT License (MIT)<br>

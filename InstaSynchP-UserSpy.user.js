@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1.0.1
+// @version     1.0.2
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -24,6 +24,12 @@ function UserSpy(version) {
     this.settings = [{
         'label': 'Login/off',
         'id': 'login-off-log',
+        'type': 'checkbox',
+        'default': true,
+        'section': ['Chat', 'UserSpy']
+    },{
+        'label': 'Login/off greynames',
+        'id': 'login-off-greynames-log',
         'type': 'checkbox',
         'default': true,
         'section': ['Chat', 'UserSpy']
@@ -79,6 +85,9 @@ UserSpy.prototype.resetVariables = function () {
 
 UserSpy.prototype.userLoggedOn = function (user) {
     "use strict";
+    if(!user.loggedin && !gmc.get('login-off-greynames-log')){
+        return;
+    }
     if (gmc.get('login-off-log')) {
         addSystemMessage('{0}({1}) logged on.'.format(user.username, user.ip));
     }
@@ -86,10 +95,13 @@ UserSpy.prototype.userLoggedOn = function (user) {
 
 UserSpy.prototype.userLoggedOff = function (id, user) {
     "use strict";
+    if(!user.loggedin && !gmc.get('login-off-greynames-log')){
+        return;
+    }
     if (gmc.get('login-off-log')) {
         addSystemMessage('{0}({1}) logged off.'.format(user.username, user.ip));
     }
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1.0.1');
+window.plugins.userSpy = new UserSpy('1.0.2');
