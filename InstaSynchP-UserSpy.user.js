@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1.0.2
+// @version     1.0.3
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -27,7 +27,7 @@ function UserSpy(version) {
         'type': 'checkbox',
         'default': true,
         'section': ['Chat', 'UserSpy']
-    },{
+    }, {
         'label': 'Login/off greynames',
         'id': 'login-off-greynames-log',
         'type': 'checkbox',
@@ -48,19 +48,23 @@ function UserSpy(version) {
     }];
 }
 
+UserSpy.prototype.executeOnce = function () {
+    events.on(th, 'RenameUser', function (ignore1, ignore2, user) {
+        if (gmc.get('rename-log')) {
+            addSystemMessage('{0} renamed to {1}'.format(user.ip, user.username));
+        }
+    });
+};
+
 UserSpy.prototype.postConnect = function () {
     "use strict";
     var th = this;
     //add events after we connected so it doesn't spam the chat for every user/video
     events.on(th, 'AddUser', th.userLoggedOn);
     events.on(th, 'RemoveUser', th.userLoggedOff);
-    events.on(th, 'RenameUser', function (ignore1, ignore2, user) {
-        if (gmc.get('rename-log')) {
-            addSystemMessage('{0} renamed to {1}'.format(user.ip, user.username));
-        }
-    });
     events.on(th, 'AddVideo', th.videoAdded);
 };
+
 UserSpy.prototype.videoAdded = function (video) {
     if (!gmc.get('add-video-log')) {
         return;
@@ -80,12 +84,13 @@ UserSpy.prototype.resetVariables = function () {
     //remove events when disconnecting/changing room and readd at postConnect
     events.unbind('AddUser', th.userLoggedOn);
     events.unbind('RemoveUser', th.userLoggedOff);
+    events.unbind('RenameUser', th.userRenamed);
     events.unbind('AddVideo', th.videoAdded);
 };
 
 UserSpy.prototype.userLoggedOn = function (user) {
     "use strict";
-    if(!user.loggedin && !gmc.get('login-off-greynames-log')){
+    if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
         return;
     }
     if (gmc.get('login-off-log')) {
@@ -95,7 +100,7 @@ UserSpy.prototype.userLoggedOn = function (user) {
 
 UserSpy.prototype.userLoggedOff = function (id, user) {
     "use strict";
-    if(!user.loggedin && !gmc.get('login-off-greynames-log')){
+    if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
         return;
     }
     if (gmc.get('login-off-log')) {
@@ -104,4 +109,4 @@ UserSpy.prototype.userLoggedOff = function (id, user) {
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1.0.2');
+window.plugins.userSpy = new UserSpy('1.0.3');
