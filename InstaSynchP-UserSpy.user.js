@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1.0.5
+// @version     1.0.6
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -73,7 +73,7 @@ UserSpy.prototype.videoAdded = function (video) {
     }
     var url = urlParser.create({videoInfo: video.info, format: 'long'}),
         len = 240 + url.length,
-        message = '{0}</a>'.format('{0} added <a href="{1}">{2}'.format(
+        message = '{0}</a>'.format('{0} added <a target="_blank" href="{1}">{2}'.format(
             video.addedby,
             url,
             video.title).substr(0, len));
@@ -111,4 +111,4 @@ UserSpy.prototype.userLoggedOff = function (id, user) {
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1.0.5');
+window.plugins.userSpy = new UserSpy('1.0.6');
