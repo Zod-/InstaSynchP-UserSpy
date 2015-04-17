@@ -80,8 +80,7 @@ UserSpy.prototype.getLogOnMessage = function (user) {
     user.username,
     '(',
     user.ip,
-    ')',
-    'logged on'
+    ') logged on'
   );
 };
 
@@ -92,8 +91,7 @@ UserSpy.prototype.getLogOffMessage = function (user) {
     user.username,
     '(',
     user.ip,
-    ')',
-    'logged off'
+    ') logged off'
   );
 };
 
@@ -135,8 +133,8 @@ UserSpy.prototype.resetVariables = function () {
 
 UserSpy.prototype.isUserLogged = function (user) {
   'use strict';
-  return !gmc.get('login-off-log') ||
-    (!user.loggedin && !gmc.get('login-off-greynames-log'));
+  return gmc.get('login-off-log') &&
+    (user.loggedin || gmc.get('login-off-greynames-log'));
 };
 
 UserSpy.prototype.userLoggedOn = function (user) {
