@@ -133,24 +133,24 @@ UserSpy.prototype.resetVariables = function () {
   events.unbind('AddVideo', _this.videoAdded);
 };
 
+UserSpy.prototype.isUserLogged = function (user) {
+  'use strict';
+  return !gmc.get('login-off-log') ||
+    (!user.loggedin && !gmc.get('login-off-greynames-log'));
+};
+
 UserSpy.prototype.userLoggedOn = function (user) {
   'use strict';
   var _this = this;
-  if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
-    return;
-  }
-  if (gmc.get('login-off-log')) {
+  if (_this.isUserLogged(user)) {
     addSystemMessage(_this.getLogOnMessage(user));
   }
 };
 
-UserSpy.prototype.userLoggedOff = function (id, user) {
+UserSpy.prototype.userLoggedOff = function (ignore, user) {
   'use strict';
   var _this = this;
-  if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
-    return;
-  }
-  if (gmc.get('login-off-log')) {
+  if (_this.isUserLogged(user)) {
     addSystemMessage(_this.getLogOffMessage(user));
   }
 };
