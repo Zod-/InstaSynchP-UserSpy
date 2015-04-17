@@ -16,33 +16,33 @@
 // @require     https://greasyfork.org/scripts/5647-instasynchp-library/code/InstaSynchP%20Library.js?version=37716
 // ==/UserScript==
 function UserSpy(version) {
-  "use strict";
+  'use strict';
   this.version = version;
   this.name = 'InstaSynchP UserSpy';
   this.settings = [{
-    'label': 'Login/off',
-    'id': 'login-off-log',
-    'type': 'checkbox',
+    label: 'Login/off',
+    id: 'login-off-log',
+    type: 'checkbox',
     'default': true,
-    'section': ['Chat', 'UserSpy']
+    section: ['Chat', 'UserSpy']
   }, {
-    'label': 'Login/off greynames',
-    'id': 'login-off-greynames-log',
-    'type': 'checkbox',
+    label: 'Login/off greynames',
+    id: 'login-off-greynames-log',
+    type: 'checkbox',
     'default': true,
-    'section': ['Chat', 'UserSpy']
+    section: ['Chat', 'UserSpy']
   }, {
-    'label': 'Rename',
-    'id': 'rename-log',
-    'type': 'checkbox',
+    label: 'Rename',
+    id: 'rename-log',
+    type: 'checkbox',
     'default': true,
-    'section': ['Chat', 'UserSpy']
+    section: ['Chat', 'UserSpy']
   }, {
-    'label': 'Add video',
-    'id': 'add-video-log',
-    'type': 'checkbox',
+    label: 'Add video',
+    id: 'add-video-log',
+    type: 'checkbox',
     'default': true,
-    'section': ['Chat', 'UserSpy']
+    section: ['Chat', 'UserSpy']
   }];
 }
 
@@ -98,7 +98,7 @@ UserSpy.prototype.getLogOffMessage = function (user) {
 };
 
 UserSpy.prototype.executeOnce = function () {
-  "use strict";
+  'use strict';
   var _this = this;
   events.on(_this, 'RenameUser', function (ignore1, ignore2, user) {
     if (gmc.get('rename-log')) {
@@ -108,35 +108,33 @@ UserSpy.prototype.executeOnce = function () {
 };
 
 UserSpy.prototype.postConnect = function () {
-  "use strict";
-  var th = this;
+  'use strict';
+  var _this = this;
   //add events after we connected so it doesn't spam the chat for every user/video
-  events.on(th, 'AddUser', th.userLoggedOn);
-  events.on(th, 'RemoveUser', th.userLoggedOff);
-  events.on(th, 'AddVideo', th.videoAdded);
+  events.on(_this, 'AddUser', _this.userLoggedOn);
+  events.on(_this, 'RemoveUser', _this.userLoggedOff);
+  events.on(_this, 'AddVideo', _this.videoAdded);
 };
 
 UserSpy.prototype.videoAdded = function (video) {
   'use strict';
   var _this = this;
-  if (!gmc.get('add-video-log')) {
-    return;
+  if (gmc.get('add-video-log')) {
+    addSystemMessage(_this.getAddVideoMessage(video));
   }
-
-  addSystemMessage(_this.getAddVideoMessage(video));
 };
 
 UserSpy.prototype.resetVariables = function () {
-  "use strict";
-  var th = this;
+  'use strict';
+  var _this = this;
   //remove events when disconnecting/changing room and readd at postConnect
-  events.unbind('AddUser', th.userLoggedOn);
-  events.unbind('RemoveUser', th.userLoggedOff);
-  events.unbind('AddVideo', th.videoAdded);
+  events.unbind('AddUser', _this.userLoggedOn);
+  events.unbind('RemoveUser', _this.userLoggedOff);
+  events.unbind('AddVideo', _this.videoAdded);
 };
 
 UserSpy.prototype.userLoggedOn = function (user) {
-  "use strict";
+  'use strict';
   var _this = this;
   if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
     return;
@@ -147,7 +145,7 @@ UserSpy.prototype.userLoggedOn = function (user) {
 };
 
 UserSpy.prototype.userLoggedOff = function (id, user) {
-  "use strict";
+  'use strict';
   var _this = this;
   if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
     return;
