@@ -46,12 +46,63 @@ function UserSpy(version) {
   }];
 }
 
+UserSpy.prototype.getAddVideoMessage = function (video) {
+  'use strict';
+  //user added <a href="url">title</a>
+  return ''.concat(
+    video.addedby,
+    ' added ',
+    '<a target="_blank" href="',
+    urlParser.create({
+      videoInfo: video.info,
+      format: 'long'
+    }),
+    '">',
+    video.title.substr(0, 240),
+    '</a>'
+  );
+};
+
+UserSpy.prototype.getRenameMessage = function (user) {
+  'use strict';
+  //ip renamed to username
+  return ''.concat(
+    user.ip,
+    ' renamed to ',
+    user.username
+  );
+};
+
+UserSpy.prototype.getLogOnMessage = function (user) {
+  'use strict';
+  //user(ip) logged on
+  return ''.concat(
+    user.username,
+    '(',
+    user.ip,
+    ')',
+    'logged on'
+  );
+};
+
+UserSpy.prototype.getLogOffMessage = function (user) {
+  'use strict';
+  //user(ip) logged off
+  return ''.concat(
+    user.username,
+    '(',
+    user.ip,
+    ')',
+    'logged off'
+  );
+};
+
 UserSpy.prototype.executeOnce = function () {
   "use strict";
-  var th = this;
-  events.on(th, 'RenameUser', function (ignore1, ignore2, user) {
+  var _this = this;
+  events.on(_this, 'RenameUser', function (ignore1, ignore2, user) {
     if (gmc.get('rename-log')) {
-      addSystemMessage('{0} renamed to {1}'.format(user.ip, user.username));
+      addSystemMessage(_this.getRenameMessage(user));
     }
   });
 };
@@ -66,19 +117,13 @@ UserSpy.prototype.postConnect = function () {
 };
 
 UserSpy.prototype.videoAdded = function (video) {
+  'use strict';
+  var _this = this;
   if (!gmc.get('add-video-log')) {
     return;
   }
-  var url = urlParser.create({
-      videoInfo: video.info,
-      format: 'long'
-    }),
-    len = 240 + url.length,
-    message = '{0}</a>'.format('{0} added <a target="_blank" href="{1}">{2}'.format(
-      video.addedby,
-      url,
-      video.title).substr(0, len));
-  addSystemMessage(message);
+
+  addSystemMessage(_this.getAddVideoMessage(video));
 };
 
 UserSpy.prototype.resetVariables = function () {
@@ -92,21 +137,23 @@ UserSpy.prototype.resetVariables = function () {
 
 UserSpy.prototype.userLoggedOn = function (user) {
   "use strict";
+  var _this = this;
   if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
     return;
   }
   if (gmc.get('login-off-log')) {
-    addSystemMessage('{0}({1}) logged on.'.format(user.username, user.ip));
+    addSystemMessage(_this.getLogOnMessage(user));
   }
 };
 
 UserSpy.prototype.userLoggedOff = function (id, user) {
   "use strict";
+  var _this = this;
   if (!user.loggedin && !gmc.get('login-off-greynames-log')) {
     return;
   }
   if (gmc.get('login-off-log')) {
-    addSystemMessage('{0}({1}) logged off.'.format(user.username, user.ip));
+    addSystemMessage(_this.getLogOffMessage(user));
   }
 };
 
