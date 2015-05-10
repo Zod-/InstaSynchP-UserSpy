@@ -3,7 +3,7 @@
 // @namespace   InstaSynchP
 // @description Log user actions into the chat (login/off, video add)
 
-// @version     1.0.9
+// @version     1.1.0
 // @author      Zod-
 // @source      https://github.com/Zod-/InstaSynchP-UserSpy
 // @license     MIT
@@ -20,29 +20,30 @@ function UserSpy(version) {
   this.version = version;
   this.name = 'InstaSynchP UserSpy';
   this.settings = [{
-    label: 'Login/off',
+    label: 'Show user logs in or off',
     id: 'login-off-log',
     type: 'checkbox',
     'default': true,
-    section: ['Chat', 'UserSpy']
+    section: ['UserSpy']
   }, {
-    label: 'Login/off greynames',
+    label: 'Show when a greyname logs in or off',
     id: 'login-off-greynames-log',
     type: 'checkbox',
     'default': true,
-    section: ['Chat', 'UserSpy']
+    section: ['UserSpy']
   }, {
-    label: 'Rename',
+    label: 'Show when a greyname renames himself',
     id: 'rename-log',
     type: 'checkbox',
     'default': true,
-    section: ['Chat', 'UserSpy']
+    section: ['UserSpy']
   }, {
-    label: 'Add video',
+    label: 'Show when someone adds a video',
+    title: 'Includes the title',
     id: 'add-video-log',
     type: 'checkbox',
     'default': true,
-    section: ['Chat', 'UserSpy']
+    section: ['UserSpy']
   }];
 }
 
@@ -154,4 +155,4 @@ UserSpy.prototype.userLoggedOff = function (ignore, user) {
 };
 
 window.plugins = window.plugins || {};
-window.plugins.userSpy = new UserSpy('1.0.9');
+window.plugins.userSpy = new UserSpy('1.1.0');
