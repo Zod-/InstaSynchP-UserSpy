@@ -44,7 +44,14 @@ function UserSpy(version) {
     type: 'checkbox',
     'default': true,
     section: ['UserSpy']
+  }, {
+    label: 'Show when a video gets played',
+    id: 'play-video-log',
+    type: 'checkbox',
+    'default': true,
+    section: ['UserSpy']
   }];
+  this.lastVideo = {};
 }
 
 UserSpy.prototype.getAddVideoMessage = function (video) {
@@ -96,10 +103,27 @@ UserSpy.prototype.getLogOffMessage = function (user) {
   );
 };
 
+UserSpy.prototype.getPlayVideoMessage = function (video) {
+  'use strict';
+  //Now playing title via user
+  return ''.concat(
+    'Now playing ',
+    '<a target="_blank" href="',
+    urlParser.create({
+      videoInfo: video.info,
+      format: 'long'
+    }),
+    '">',
+    video.title.substr(0, 240),
+    '</a>',
+    ' via ',
+    video.addedby);
+};
+
 UserSpy.prototype.executeOnce = function () {
   'use strict';
   var _this = this;
-  events.on(_this, 'RenameUser', function (ignore1, ignore2, user) {
+  events.on(_this, 'RenameUser', function (user) {
     if (gmc.get('rename-log')) {
       addSystemMessage(_this.getRenameMessage(user));
     }
@@ -113,14 +137,7 @@ UserSpy.prototype.postConnect = function () {
   events.on(_this, 'AddUser', _this.userLoggedOn);
   events.on(_this, 'RemoveUser', _this.userLoggedOff);
   events.on(_this, 'AddVideo', _this.videoAdded);
-};
-
-UserSpy.prototype.videoAdded = function (video) {
-  'use strict';
-  var _this = this;
-  if (gmc.get('add-video-log')) {
-    addSystemMessage(_this.getAddVideoMessage(video));
-  }
+  events.on(_this, 'PlayVideo', _this.videoPlayed);
 };
 
 UserSpy.prototype.resetVariables = function () {
@@ -130,6 +147,26 @@ UserSpy.prototype.resetVariables = function () {
   events.unbind('AddUser', _this.userLoggedOn);
   events.unbind('RemoveUser', _this.userLoggedOff);
   events.unbind('AddVideo', _this.videoAdded);
+  events.unbind('PlayVideo', _this.videoPlayed);
+  _this.lastVideo = {};
+};
+
+UserSpy.prototype.videoPlayed = function (video) {
+  'use strict';
+  var _this = this;
+  if (gmc.get('play-video-log') &&
+    !videoInfoEquals(video.info, _this.lastVideo)) {
+    _this.lastVideo = video;
+    addSystemMessage(_this.getPlayVideoMessage(video));
+  }
+};
+
+UserSpy.prototype.videoAdded = function (video) {
+  'use strict';
+  var _this = this;
+  if (gmc.get('add-video-log')) {
+    addSystemMessage(_this.getAddVideoMessage(video));
+  }
 };
 
 UserSpy.prototype.isUserLogged = function (user) {
@@ -146,7 +183,7 @@ UserSpy.prototype.userLoggedOn = function (user) {
   }
 };
 
-UserSpy.prototype.userLoggedOff = function (ignore, user) {
+UserSpy.prototype.userLoggedOff = function (user) {
   'use strict';
   var _this = this;
   if (_this.isUserLogged(user)) {
