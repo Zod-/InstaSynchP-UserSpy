@@ -183,10 +183,20 @@ UserSpy.prototype.userLoggedOn = function (user) {
   }
 };
 
+UserSpy.prototype.wasUserForcedOff = function (user) {
+  'use strict';
+  var _this = this;
+  var reg = new RegExp('^[^\\s]+ has (?:kicked|banned) {0}\\({1}\\)$'
+    .format(user.username, user.ip));
+  return (!isUdef(window.plugins.modSpy) &&
+    $('#chat_messages > :last-child').find('.username').text() === ': ' &&
+    $('#chat_messages > :last-child').find('.message').text().match(reg));
+};
+
 UserSpy.prototype.userLoggedOff = function (user) {
   'use strict';
   var _this = this;
-  if (_this.isUserLogged(user)) {
+  if (_this.isUserLogged(user) && !_this.wasUserForcedOff(user)) {
     addSystemMessage(_this.getLogOffMessage(user));
   }
 };
