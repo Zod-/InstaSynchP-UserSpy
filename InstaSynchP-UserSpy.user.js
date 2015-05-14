@@ -155,7 +155,7 @@ UserSpy.prototype.videoPlayed = function (video) {
   'use strict';
   var _this = this;
   if (gmc.get('play-video-log') &&
-    !videoInfoEquals(video.info, _this.lastVideo)) {
+    !videoInfoEquals(video.info, _this.lastVideo.info)) {
     _this.lastVideo = video;
     addSystemMessage(_this.getPlayVideoMessage(video));
   }
